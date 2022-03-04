@@ -13,13 +13,15 @@ const SimpleStore = () => {
     const [connButtonText, setConnButtonText] = useState("Connect User");
     const [defaultAccount, setDefaultAccount] = useState("");
     const [ipfsLink, setIpfsLink] = useState(
-        "https://drive.google.com/drive/folders/1hEj46nBvweQ-SZmSa6IhbKLQL_YR55rP?usp=sharing"
+        "http://IPFS:3000/WHERE_THE_ACTUAL_CODE_IS"
     );
     const [status, setStatus] = useState("");
 
     const [provider, setProvider] = useState(null);
     const [signer, setSigner] = useState(null);
     const [contract, setContract] = useState(null);
+    const [decryptedMessage, setDecryptedMessage] = useState("");
+    const [hashedValue, setHashedValue] = useState("");
 
     const connectWalletHandler = () => {
         if (window.ethereum) {
@@ -76,7 +78,7 @@ const SimpleStore = () => {
         );
 
         // ecrypting using codelink and account_private_key
-        var data = hashed_pubkey_code + ipfsLink;
+        var data = hashed_pubkey_code + " " + ipfsLink;
         var encr_codelink_hash = CryptoJS.AES.encrypt(
             JSON.stringify(data),
             defaultAccount
@@ -85,12 +87,33 @@ const SimpleStore = () => {
         contract.set(encr_codelink_hash); // sends the encrypted data to the blockchain
     }
 
+    function decryptMessage(event) {
+        event.preventDefault();
+
+        var ownerPublicKey = event.target.ownerPublicKey.value;
+        var encryptedMessage = event.target.decrypt.value;
+        var bytes = CryptoJS.AES.decrypt(encryptedMessage, ownerPublicKey);
+        var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+        setDecryptedMessage(decryptedData);
+    }
+
+    function findHash(event) {
+        event.preventDefault();
+
+        var ownerPublicKey = event.target.ownerPublicKey_for_hashchecking.value;
+        var code = event.target.code.value;
+
+        var hashed_pubkey_code = sha256(ownerPublicKey + code);
+
+        setHashedValue(hashed_pubkey_code);
+    }
+
     return (
         <div>
+            <h1>1. Code Input</h1>
             <h3>{"Get/Set interaction with contract!"}</h3>
             <button onClick={connectWalletHandler}> {connButtonText} </button>
             <h3>Address: {defaultAccount}</h3>
-
             <form onSubmit={setHandler}>
                 <textarea
                     id="setText"
@@ -99,12 +122,31 @@ const SimpleStore = () => {
                 ></textarea>
                 <button type={"submit"}> Submit Code </button>
             </form>
-
             <h3>{status}</h3>
-
-            <button onClick={getCurrentVal}>Get Latest Commit</button>
-
+            <button onClick={getCurrentVal}>
+                Get Latest Commit's Encryption
+            </button>
             <h3> {errorMessage}</h3>
+            <h1>2. Retrieve Code link and Hash</h1>
+            <form onSubmit={decryptMessage}>
+                Owner's PublicKey <input id="ownerPublicKey"></input>
+                <br></br>
+                Encrypted Message <input id="decrypt"></input>
+                <br></br>
+                <button type={"submit"}> Decrypt Message </button>
+            </form>
+            Decrypted Message: {decryptedMessage}
+            <h1>3. Code Ownership Check via hashing</h1>
+            <form onSubmit={findHash}>
+                Owner's PublicKey{" "}
+                <input id="ownerPublicKey_for_hashchecking"></input>
+                <br></br>
+                Code from the link <textarea id="code"></textarea>
+                <br></br>
+                <button type={"submit"}> Check Hash </button>
+            </form>
+            <h3>Hashed Value from Decrypted Message</h3>
+            {hashedValue}
         </div>
     );
 };
