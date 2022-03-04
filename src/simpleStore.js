@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import SimpleStore_abi from "./SimpleStore_abi.json";
 
 const SimpleStore = () => {
-    const contractAddress = "0x5932a6f4b60588cF4E92d59Bc7aCbED321713b2C";
+    const contractAddress = "0x5eD2A1F233b44670E1E84aA0E0808059AaEcAE7F";
     // change the abi and the contract address (not user adress) each time the contract gets deployed
 
     const [errorMessage, setErrorMessage] = useState("WHY");
@@ -52,7 +52,7 @@ const SimpleStore = () => {
 
     function getCurrentVal() {
         console.log(contract);
-        let val = contract.getting().then((val) => {
+        let val = contract.get().then((val) => {
             setErrorMessage(val);
         });
     }
