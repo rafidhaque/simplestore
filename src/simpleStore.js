@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import SimpleStore_abi from "./SimpleStore_abi.json";
 
 const SimpleStore = () => {
-    const contractAddress = "0x411CE1cB07F0c36837A7C514dAFA94Fe86597Df5";
+    const contractAddress = "0x5932a6f4b60588cF4E92d59Bc7aCbED321713b2C";
     // change the abi and the contract address (not user adress) each time the contract gets deployed
 
     const [errorMessage, setErrorMessage] = useState("WHY");
@@ -52,9 +52,15 @@ const SimpleStore = () => {
 
     function getCurrentVal() {
         console.log(contract);
-        let val = contract.lol().then((val) => {
+        let val = contract.getting().then((val) => {
             setErrorMessage(val);
         });
+    }
+
+    function setHandler(event) {
+        event.preventDefault();
+
+        contract.set(event.target.setText.value);
     }
 
     return (
@@ -62,6 +68,11 @@ const SimpleStore = () => {
             <h3>{"Get/Set interaction with contract!"}</h3>
             <button onClick={connectWalletHandler}> {connButtonText} </button>
             <h3>Address: {defaultAccount}</h3>
+
+            <form onSubmit={setHandler}>
+                <input id="setText" type="text"></input>
+                <button type={"submit"}> Update Contract </button>
+            </form>
 
             <button onClick={getCurrentVal}>Get Current Value</button>
 
