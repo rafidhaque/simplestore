@@ -4,7 +4,7 @@ import SimpleStore from "./simpleStore";
 function App() {
     return (
         <div className="App">
-            <SimpleStore></SimpleStore>
+            <SimpleStore />
         </div>
     );
 }
