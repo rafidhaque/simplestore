@@ -6,7 +6,7 @@ var sha256 = require("js-sha256");
 var CryptoJS = require("crypto-js");
 
 const SimpleStore = () => {
-    const contractAddress = "0x158a0E10E7dd742E6CceCCd4dc0b2A802c531AAb";
+    const contractAddress = "0x49870AcDF9c6eB1757a08691a5aDd7c41290D1dF";
     // change the abi and the contract address (not user adress) each time the contract gets deployed
 
     const [errorMessage, setErrorMessage] = useState("");
